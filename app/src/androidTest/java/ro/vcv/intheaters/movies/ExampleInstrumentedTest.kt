@@ -1,4 +1,4 @@
-package ro.vcv.intheaters.intheaters
+package ro.vcv.intheaters.movies
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
