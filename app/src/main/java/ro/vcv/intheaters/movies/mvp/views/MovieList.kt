@@ -1,4 +1,4 @@
-package ro.vcv.intheaters.movies
+package ro.vcv.intheaters.movies.mvp.views
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -6,10 +6,12 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import ro.vcv.intheaters.movies.R
 import ro.vcv.intheaters.movies.helper.MoviesListAdapter
 import ro.vcv.intheaters.movies.models.Movie
+import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
 
-class MovieList : AppCompatActivity() {
+class MovieList : AppCompatActivity(), MovieListContract.View {
 
     private var toolbar: Toolbar? = null
     private var moviesRecyclerView: RecyclerView? = null
