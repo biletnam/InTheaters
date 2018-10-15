@@ -1,17 +1,22 @@
 package ro.vcv.intheaters.movies.mvp.views
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import android.widget.Toast
 import ro.vcv.intheaters.movies.R
 import ro.vcv.intheaters.movies.helper.MoviesListAdapter
 import ro.vcv.intheaters.movies.models.Movie
 import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
+import ro.vcv.intheaters.movies.mvp.presenters.MovieListPresenter
 
 class MovieList : AppCompatActivity(), MovieListContract.View {
+
+    private val presenter: MovieListContract.Presenter = MovieListPresenter(this)
 
     private var toolbar: Toolbar? = null
     private var moviesRecyclerView: RecyclerView? = null
@@ -25,19 +30,24 @@ class MovieList : AppCompatActivity(), MovieListContract.View {
 
         initToolbar()
         initMoviesList()
+
+        presenter.onViewLoaded()
+    }
+
+    override fun displayApiError() {
+        Toast.makeText(this, "An error occurred while getting data from the server ;(", Toast.LENGTH_LONG).show()
+    }
+
+    override fun displayNowPlaying(results: Array<Movie>?) {
+        if (results != null) {
+            moviesRecyclerView!!.adapter = MoviesListAdapter(results.toList())
+        }
     }
 
     private fun initMoviesList() {
         moviesRecyclerView = findViewById(R.id.movies_list_recycler_view)
         moviesRecyclerView!!.setHasFixedSize(true)
         moviesRecyclerView!!.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-
-        val movies = ArrayList<Movie>()
-        movies.add(Movie())
-        movies.add(Movie())
-        movies.add(Movie())
-
-        moviesRecyclerView!!.adapter = MoviesListAdapter(movies)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
