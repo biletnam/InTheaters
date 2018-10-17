@@ -9,7 +9,9 @@ import com.bumptech.glide.request.RequestOptions
 import ro.vcv.intheaters.movies.R
 import ro.vcv.intheaters.movies.models.Movie
 
-class MoviesListAdapter(private val moviesList: List<Movie>) : RecyclerView.Adapter<MovieViewHolder>() {
+class MoviesListAdapter(private val moviesList: List<Movie>,
+                        private val clickListener: (Movie) -> Unit)
+    : RecyclerView.Adapter<MovieViewHolder>() {
 
     private var context: Context? = null
 
@@ -31,6 +33,8 @@ class MoviesListAdapter(private val moviesList: List<Movie>) : RecyclerView.Adap
                     .apply(RequestOptions()
                             .placeholder(R.drawable.ic_movie_white_64dp))
                     .into(holder.movieImage)
+
+            holder.bind(moviesList[position], clickListener)
         }
     }
 

@@ -62,6 +62,7 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
 
         for (movie: Movie in movies) {
             movie.posterPath = "$baseUrl$posterSize" + movie.posterPath
+            movie.backdropPath = "$baseUrl$backdropSize" + movie.backdropPath
         }
 
         return movies

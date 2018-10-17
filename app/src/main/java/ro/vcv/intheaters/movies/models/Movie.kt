@@ -1,6 +1,7 @@
 package ro.vcv.intheaters.movies.models
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class Movie(@SerializedName("original_title")
                  var originalTitle: String,
@@ -9,3 +10,4 @@ data class Movie(@SerializedName("original_title")
                  var posterPath: String,
                  @SerializedName("backdrop_path")
                  var backdropPath: String)
+    : Serializable

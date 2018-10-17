@@ -13,6 +13,7 @@ import ro.vcv.intheaters.movies.helper.MoviesListAdapter
 import ro.vcv.intheaters.movies.models.Movie
 import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
 import ro.vcv.intheaters.movies.mvp.presenters.MovieListPresenter
+import ro.vcv.intheaters.movies.mvp.views.MovieDetails.Companion.INTENT_EXTRA_MOVIE
 
 class MovieList : AppCompatActivity(), MovieListContract.View {
 
@@ -40,7 +41,9 @@ class MovieList : AppCompatActivity(), MovieListContract.View {
 
     override fun displayNowPlaying(results: Array<Movie>?) {
         if (results != null) {
-            moviesRecyclerView!!.adapter = MoviesListAdapter(results.toList())
+            moviesRecyclerView!!.adapter = MoviesListAdapter(results.toList()) {
+                movie : Movie -> movieClicked(movie)
+            }
         }
     }
 
@@ -59,5 +62,11 @@ class MovieList : AppCompatActivity(), MovieListContract.View {
     private fun initToolbar() {
         toolbar = findViewById(R.id.movies_list_toolbar)
         setSupportActionBar(toolbar)
+    }
+
+    private fun movieClicked(movie: Movie) {
+        val intent = Intent(this, MovieDetails::class.java)
+        intent.putExtra(INTENT_EXTRA_MOVIE, movie)
+        startActivity(intent)
     }
 }
