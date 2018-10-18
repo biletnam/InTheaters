@@ -1,6 +1,8 @@
 package ro.vcv.intheaters.movies.helper
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -28,10 +30,15 @@ class MoviesListAdapter(private val moviesList: MutableList<Movie>,
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         if (position < moviesList.size) {
+            val circularProgressDrawable = CircularProgressDrawable(context!!)
+            circularProgressDrawable.setStyle(CircularProgressDrawable.LARGE)
+            circularProgressDrawable.setColorSchemeColors(ContextCompat.getColor(context!!, android.R.color.white))
+            circularProgressDrawable.start()
+
             Glide.with(context!!)
                     .load(moviesList[position].posterPath)
                     .apply(RequestOptions()
-                            .placeholder(R.drawable.ic_movie_white_64dp))
+                            .placeholder(circularProgressDrawable))
                     .into(holder.movieImage)
 
             holder.bind(moviesList[position], clickListener)

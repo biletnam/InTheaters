@@ -1,6 +1,8 @@
 package ro.vcv.intheaters.movies.mvp.views
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.TextView
@@ -35,10 +37,15 @@ class MovieDetails : AppCompatActivity() {
     }
 
     private fun populateView(movie: Movie) {
+        val circularProgressDrawable = CircularProgressDrawable(this)
+        circularProgressDrawable.setStyle(CircularProgressDrawable.LARGE)
+        circularProgressDrawable.setColorSchemeColors(ContextCompat.getColor(this, android.R.color.white))
+        circularProgressDrawable.start()
+
         Glide.with(this)
                 .load(movie.backdropPath)
                 .apply(RequestOptions()
-                        .placeholder(R.drawable.ic_movie_white_64dp))
+                        .placeholder(circularProgressDrawable))
                 .into(image!!)
 
         title!!.text = movie.originalTitle
