@@ -3,9 +3,10 @@ package ro.vcv.intheaters.movies.mvp.presenters
 import ro.vcv.intheaters.movies.models.Movie
 import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
 import ro.vcv.intheaters.movies.network.interactors.GetConfiguration
+import ro.vcv.intheaters.movies.network.interactors.GetMovies
 import ro.vcv.intheaters.movies.network.interactors.GetNowPlaying
 import ro.vcv.intheaters.movies.network.models.GetConfigurationResponse
-import ro.vcv.intheaters.movies.network.models.GetNowPlayingResponse
+import ro.vcv.intheaters.movies.network.models.GetMoviesResponse
 
 class MovieListPresenter(private val view: MovieListContract.View) : MovieListContract.Presenter {
 
@@ -13,12 +14,14 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
     private var backdropSize: String? = null
     private var posterSize: String? = null
 
-    private var currentPage: Int = 1
-    private var highestPage: Int = 1
+    private var currentPage: Int? = 1
     private var totalPages: Int? = null
 
+    private var lastSearched: String? = null
+    private var isSearchActive: Boolean = false
+
     override fun onViewLoaded() {
-        GetConfiguration.execute(object: GetConfiguration.GetMovieDetailsCallback {
+        GetConfiguration.execute(object : GetConfiguration.GetMovieDetailsCallback {
             override fun onSuccess(responseBody: GetConfigurationResponse?) {
                 if (baseUrl == null) {
                     baseUrl = responseBody!!.images.baseUrl
@@ -32,7 +35,7 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
                     posterSize = responseBody!!.images.posterSizes[1]
                 }
 
-                getNowPlaying(currentPage)
+                getNowPlaying(currentPage!!)
             }
 
             override fun onError() {
@@ -42,23 +45,52 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
     }
 
     override fun onScrollToBottom() {
-        if (totalPages != null && currentPage >= totalPages!!) {
+        if (totalPages != null && currentPage!! >= totalPages!!) {
             return
         }
 
-        currentPage++
-        if (highestPage < currentPage) {
-            getNowPlaying(currentPage)
-            highestPage = currentPage
+        if (isSearchActive) {
+            onSearch(lastSearched!!, currentPage!! + 1)
+        } else {
+            getNowPlaying(currentPage!! + 1)
         }
+    }
+
+    override fun onSearch(query: String) {
+        onSearch(query, 1)
+    }
+
+    override fun onSearch(query: String, page: Int) {
+        isSearchActive = true
+
+        GetMovies.execute(object : GetMovies.GetMoviesCallback {
+            override fun onSuccess(responseBody: GetMoviesResponse?) {
+                totalPages = responseBody?.totalPages
+                currentPage = responseBody?.page
+                lastSearched = query
+
+                view.addMoviesToList(adjustMoviesPath(responseBody?.results), currentPage == 1)
+            }
+
+            override fun onError() {
+                view.displayApiError()
+            }
+        }, query, page)
+    }
+
+    override fun onSearchClosed() {
+        isSearchActive = false
+        currentPage = 1
+        getNowPlaying(currentPage!!)
     }
 
     private fun getNowPlaying(page: Int) {
         GetNowPlaying.execute(object : GetNowPlaying.GetNowPlayingCallback {
-            override fun onSuccess(responseBody: GetNowPlayingResponse?) {
+            override fun onSuccess(responseBody: GetMoviesResponse?) {
                 totalPages = responseBody?.totalPages
+                currentPage = responseBody?.page
 
-                view.addMoviesToList(getFullPathMovies(responseBody?.results))
+                view.addMoviesToList(adjustMoviesPath(responseBody?.results), currentPage == 1)
             }
 
             override fun onError() {
@@ -67,7 +99,7 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
         }, page)
     }
 
-    private fun getFullPathMovies(movies: Array<Movie>?): Array<Movie>? {
+    private fun adjustMoviesPath(movies: Array<Movie>?): Array<Movie>? {
         if (movies == null) {
             return null
         }

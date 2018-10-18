@@ -6,11 +6,11 @@ import retrofit2.Response
 import ro.vcv.intheaters.movies.network.ApiUtils
 import ro.vcv.intheaters.movies.network.models.GetMoviesResponse
 
-class GetNowPlaying {
+class GetMovies {
 
     companion object {
-        fun execute(callback: GetNowPlayingCallback, page: Int) {
-            ApiUtils.getApi().getNowPlaying(ApiUtils.API_KEY, page).enqueue(object : Callback<GetMoviesResponse> {
+        fun execute(callback: GetMoviesCallback, query: String, page: Int) {
+            ApiUtils.getApi().getMovies(ApiUtils.API_KEY, query, page).enqueue(object : Callback<GetMoviesResponse> {
                 override fun onResponse(call: Call<GetMoviesResponse>, response: Response<GetMoviesResponse>) {
                     if (response.isSuccessful) {
                         if (response.body() != null) {
@@ -30,7 +30,7 @@ class GetNowPlaying {
         }
     }
 
-    interface GetNowPlayingCallback {
+    interface GetMoviesCallback {
         fun onSuccess(responseBody: GetMoviesResponse?)
 
         fun onError()

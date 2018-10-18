@@ -38,6 +38,11 @@ class MoviesListAdapter(private val moviesList: MutableList<Movie>,
         }
     }
 
+    fun clearData() {
+        moviesList.clear()
+        notifyDataSetChanged()
+    }
+
     fun addData(movies: List<Movie>) {
         moviesList.addAll(movies)
         notifyDataSetChanged()

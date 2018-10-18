@@ -8,7 +8,7 @@ interface MovieListContract {
 
         fun displayApiError()
 
-        fun addMoviesToList(results: Array<Movie>?)
+        fun addMoviesToList(results: Array<Movie>?, shouldClear: Boolean)
 
     }
 
@@ -17,6 +17,12 @@ interface MovieListContract {
         fun onViewLoaded()
 
         fun onScrollToBottom()
+
+        fun onSearch(query: String)
+
+        fun onSearch(query: String, page: Int)
+
+        fun onSearchClosed()
 
     }
 
