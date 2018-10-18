@@ -9,7 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import ro.vcv.intheaters.movies.R
 import ro.vcv.intheaters.movies.models.Movie
 
-class MoviesListAdapter(private val moviesList: List<Movie>,
+class MoviesListAdapter(private val moviesList: MutableList<Movie>,
                         private val clickListener: (Movie) -> Unit)
     : RecyclerView.Adapter<MovieViewHolder>() {
 
@@ -38,4 +38,8 @@ class MoviesListAdapter(private val moviesList: List<Movie>,
         }
     }
 
+    fun addData(movies: List<Movie>) {
+        moviesList.addAll(movies)
+        notifyDataSetChanged()
+    }
 }

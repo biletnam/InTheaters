@@ -8,12 +8,16 @@ interface MovieListContract {
 
         fun displayApiError()
 
-        fun displayNowPlaying(results: Array<Movie>?)
+        fun addMoviesToList(results: Array<Movie>?)
 
     }
 
     interface Presenter {
+
         fun onViewLoaded()
+
+        fun onScrollToBottom()
+
     }
 
 }

@@ -13,7 +13,8 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
     private var backdropSize: String? = null
     private var posterSize: String? = null
 
-    private var currentPage: Int? = 1
+    private var currentPage: Int = 1
+    private var highestPage: Int = 1
     private var totalPages: Int? = null
 
     override fun onViewLoaded() {
@@ -31,7 +32,7 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
                     posterSize = responseBody!!.images.posterSizes[1]
                 }
 
-                getNowPlaying(1)
+                getNowPlaying(currentPage)
             }
 
             override fun onError() {
@@ -40,13 +41,24 @@ class MovieListPresenter(private val view: MovieListContract.View) : MovieListCo
         })
     }
 
+    override fun onScrollToBottom() {
+        if (totalPages != null && currentPage >= totalPages!!) {
+            return
+        }
+
+        currentPage++
+        if (highestPage < currentPage) {
+            getNowPlaying(currentPage)
+            highestPage = currentPage
+        }
+    }
+
     private fun getNowPlaying(page: Int) {
         GetNowPlaying.execute(object : GetNowPlaying.GetNowPlayingCallback {
             override fun onSuccess(responseBody: GetNowPlayingResponse?) {
-                currentPage = responseBody?.page
                 totalPages = responseBody?.totalPages
 
-                view.displayNowPlaying(getFullPathMovies(responseBody?.results))
+                view.addMoviesToList(getFullPathMovies(responseBody?.results))
             }
 
             override fun onError() {

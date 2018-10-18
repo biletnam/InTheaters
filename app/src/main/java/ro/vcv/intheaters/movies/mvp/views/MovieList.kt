@@ -1,14 +1,16 @@
 package ro.vcv.intheaters.movies.mvp.views
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.widget.NestedScrollView
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.widget.Toast
 import ro.vcv.intheaters.movies.R
+import ro.vcv.intheaters.movies.helper.InfiniteScrollListener
 import ro.vcv.intheaters.movies.helper.MoviesListAdapter
 import ro.vcv.intheaters.movies.models.Movie
 import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
@@ -21,6 +23,11 @@ class MovieList : AppCompatActivity(), MovieListContract.View {
 
     private var toolbar: Toolbar? = null
     private var moviesRecyclerView: RecyclerView? = null
+    private var moviesNestedScrollView: NestedScrollView? = null
+
+    private var adapter = MoviesListAdapter(mutableListOf()) { movie: Movie ->
+        movieClicked(movie)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,18 +46,24 @@ class MovieList : AppCompatActivity(), MovieListContract.View {
         Toast.makeText(this, "An error occurred while getting data from the server ;(", Toast.LENGTH_LONG).show()
     }
 
-    override fun displayNowPlaying(results: Array<Movie>?) {
-        if (results != null) {
-            moviesRecyclerView!!.adapter = MoviesListAdapter(results.toList()) {
-                movie : Movie -> movieClicked(movie)
-            }
+    override fun addMoviesToList(results: Array<Movie>?) {
+        if (results == null) {
+            return
         }
+
+        adapter.addData(results.toMutableList())
     }
 
     private fun initMoviesList() {
+        val layout = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+
         moviesRecyclerView = findViewById(R.id.movies_list_recycler_view)
         moviesRecyclerView!!.setHasFixedSize(true)
-        moviesRecyclerView!!.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        moviesRecyclerView!!.layoutManager = layout
+        moviesRecyclerView!!.adapter = adapter
+
+        moviesNestedScrollView = findViewById(R.id.movies_list_nested_scroll_view)
+        moviesNestedScrollView!!.setOnScrollChangeListener(InfiniteScrollListener({ presenter.onScrollToBottom() }, layout))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
