@@ -11,7 +11,7 @@ class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var movieImage: ImageView = itemView.findViewById(R.id.movie_item_image)
 
     fun bind(movie: Movie, clickListener: (Movie) -> Unit) {
-        itemView.setOnClickListener {clickListener(movie)}
+        itemView.setOnClickListener { clickListener(movie) }
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.*
 data class GetMoviesResponse(var results: Array<Movie>,
                              var page: Int,
                              @SerializedName("total_pages")
-                                 var totalPages: Int) {
+                             var totalPages: Int) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

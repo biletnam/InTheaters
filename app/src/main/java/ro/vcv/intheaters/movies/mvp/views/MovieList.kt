@@ -6,8 +6,10 @@ import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
+import android.view.View
 import android.widget.Toast
 import ro.vcv.intheaters.movies.R
 import ro.vcv.intheaters.movies.helper.InfiniteScrollListener
@@ -16,8 +18,6 @@ import ro.vcv.intheaters.movies.models.Movie
 import ro.vcv.intheaters.movies.mvp.contracts.MovieListContract
 import ro.vcv.intheaters.movies.mvp.presenters.MovieListPresenter
 import ro.vcv.intheaters.movies.mvp.views.MovieDetails.Companion.INTENT_EXTRA_MOVIE
-import android.support.v7.widget.SearchView
-import android.view.View
 
 class MovieList : AppCompatActivity(), MovieListContract.View {
 

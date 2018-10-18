@@ -12,7 +12,7 @@ interface Api {
     fun getNowPlaying(@Query("api_key") key: String, @Query("page") page: Int): Call<GetMoviesResponse>
 
     @GET("search/movie")
-    fun getMovies(@Query("api_key") key: String, @Query("query") query: String,  @Query("page") page: Int): Call<GetMoviesResponse>
+    fun getMovies(@Query("api_key") key: String, @Query("query") query: String, @Query("page") page: Int): Call<GetMoviesResponse>
 
     @GET("configuration")
     fun getConfiguration(@Query("api_key") key: String): Call<GetConfigurationResponse>
